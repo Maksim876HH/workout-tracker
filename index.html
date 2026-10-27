@@ -2,95 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Workout Tracker</title>
-    <script type="module" crossorigin src="/workout-tracker/assets/index-gWkDcHg6.js"></script>
-    <link rel="stylesheet" crossorigin href="/workout-tracker/assets/index-DQI2EJs4.css">
+    <title>workout-react</title>
+    <script type="module" crossorigin src="/assets/index-BQSzN7Dz.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DVILNpaV.css">
   </head>
   <body>
-    <div id="app">
-      <header>
-        <div class="theme-toggle-container">
-          <button
-            id="theme-toggle-btn"
-            class="theme-btn"
-            aria-label="Toggle theme"
-          >
-            ☀️ Light
-          </button>
-        </div>
-        <h1>Workout Log</h1>
-      </header>
-      <section class="timer-section">
-        <h2>Rest Timer</h2>
-        <div id="timer-display">01:30</div>
-
-        <div class="timer-presets">
-          <button type="button" class="preset-btn" data-time="30">30s</button>
-          <button type="button" class="preset-btn" data-time="60">60s</button>
-          <button type="button" class="preset-btn active" data-time="90">
-            90s
-          </button>
-          <button type="button" class="preset-btn" data-time="120">2m</button>
-        </div>
-
-        <div class="timer-controls">
-          <button id="start-timer-btn">Start</button>
-          <button id="stop-timer-btn" class="secondary-btn">Stop</button>
-          <button id="reset-timer-btn" class="secondary-btn-3">Reset</button>
-        </div>
-      </section>
-
-      <section class="workout-form-section">
-        <h2>Log Exercise</h2>
-        <form id="workout-form">
-          <input
-            type="text"
-            id="exercise-name"
-            placeholder="Exercise (e.g. Bench Press)"
-            required
-          />
-          <input type="number" id="weight" placeholder="Weight (kg)" required />
-          <input type="number" id="reps" placeholder="Reps" required />
-          <button type="submit">Add Set</button>
-        </form>
-      </section>
-
-      <section class="history-section">
-        <!-- 1. Верхняя строка: Заголовок слева, Объем справа -->
-        <div class="history-header">
-          <div class="header-top">
-            <h2>Workout History</h2>
-            <div class="volume-badge">
-              <span>Volume:</span>
-              <strong id="total-volume">0 kg</strong>
-            </div>
-          </div>
-
-          <!-- 2. Фильтр по датам -->
-          <div class="date-filter-container">
-            <button id="filter-today-btn" class="date-btn active">Today</button>
-            <button id="filter-yesterday-btn" class="date-btn">
-              Yesterday
-            </button>
-            <input type="date" id="custom-date-input" class="date-picker" />
-          </div>
-
-          <!-- 3. Поиск и кнопка Clear All -->
-          <div class="header-controls">
-            <input
-              type="text"
-              id="search-input"
-              placeholder="Search exercise..."
-            />
-            <button id="clear-all-btn" class="clear-btn" title="Clear workouts">
-              Clear All
-            </button>
-          </div>
-        </div>
-
-        <ul id="workout-list"></ul>
-      </section>
-    </div>
+    <div id="root"></div>
   </body>
 </html>
