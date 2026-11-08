@@ -37,11 +37,50 @@ body {
   gap: 20px;
 }
 
+.app-header {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    #1e293b 35%,
+    rgba(34, 197, 94, 0.22) 100%
+  );
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.app-header .theme-toggle-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.app-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transform: translateY(-15px);
+}
+
+.app-title {
+  font-size: 2.5rem;
+  margin-bottom: 22px;
+}
+
 header h1 {
   text-align: center;
   color: var(--accent-color);
   font-size: 1.8rem;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
+  margin-top: -10px;
 }
 
 body.light-theme {
@@ -63,7 +102,7 @@ body.light-theme .timer-preset-btn {
 
 .theme-toggle-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: 10px;
   background: transparent;
   border: none;
@@ -139,15 +178,6 @@ input:checked + .slider:before {
   opacity: 0.7;
 }
 
-.app-header {
-  position: relative;
-  background-color: var(--card-bg, #1e1e1e);
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
 section {
   background-color: var(--card-bg);
   padding: 20px;
@@ -161,22 +191,107 @@ section h2 {
   margin-bottom: 15px;
 }
 
+/* Внешняя секция таймера (контейнер для анимации) */
 .timer-section {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 20px auto;
+  border-radius: 16px;
+  z-index: 1;
+  overflow: hidden;
+  background: transparent;
+  padding: 2px; /* Отступ 2px для видимой бегущей линии */
+}
+
+/* Внутренняя подложка (перекрывает центр карточки) */
+.timer-section .bg {
+  position: relative;
+  background: var(--card-bg, #1e293b);
+  border-radius: 14px;
+  padding: 24px;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
   text-align: center;
+  color: var(--text-main, #f8fafc);
+}
+
+/* Зеленый анимированный шар */
+.timer-section .blob {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  opacity: 0.9;
+  filter: blur(20px);
+  animation: blob-bounce 10s infinite ease-in-out;
 }
 
 #timer-display {
   font-size: 3rem;
-  font-weight: bold;
+  font-weight: 700;
+  font-family: monospace;
   letter-spacing: 2px;
-  margin: 10px 0;
-  color: var(--text-main);
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+/* Кнопки быстрых пресетов (30s, 1m, 1.5m, 2m) */
+.timer-presets {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 #workout-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+/* Внешняя секция формы (контейнер для анимации) */
+.workout-form-section {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto 20px auto;
+  border-radius: 16px;
+  z-index: 1;
+  overflow: hidden;
+  background: transparent;
+  padding: 2px; /* Отступ для бегущей линии */
+}
+
+/* Внутренняя подложка формы */
+.workout-form-section .bg {
+  position: relative;
+  background: var(--card-bg, #1e293b);
+  border-radius: 14px;
+  padding: 24px;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  color: var(--text-main, #f8fafc);
+}
+
+/* Зеленый анимированный шар для формы */
+.workout-form-section .blob {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  opacity: 0.9;
+  filter: blur(20px);
+  animation: blob-bounce 10s infinite ease-in-out;
 }
 
 input {
@@ -266,14 +381,6 @@ button:hover {
   border-left: 4px solid var(--accent-color);
 }
 
-.timer-presets {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 15px;
-  margin-top: 20px;
-}
-
 .preset-btn {
   background-color: var(--input-bg);
   color: var(--text-main);
@@ -332,8 +439,53 @@ button:hover {
 .history-header {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.history-section {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto 20px auto;
+  border-radius: 16px;
+  z-index: 1;
+  background: transparent;
+  padding: 2px;
+}
+
+.blob-container {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none; /* Пропускает клики сквозь себя */
+}
+
+/* Внутренняя подложка */
+.history-section .bg {
+  position: relative;
+  background: var(--card-bg, #1e293b);
+  border-radius: 14px;
+  padding: 24px;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  color: var(--text-main, #f8fafc);
+}
+
+/* Зеленый шар, бегающий строго по периметру */
+.history-section .blob {
+  position: absolute;
+  z-index: 1;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  opacity: 0.9;
+  filter: blur(20px);
+  animation: history-perimeter 10s infinite linear;
 }
 
 .header-top {
@@ -522,5 +674,48 @@ button:hover {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Твои оригинальные кейфреймы анимации */
+@keyframes blob-bounce {
+  0% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate(-100%, -100%) translate3d(100%, 0, 0);
+  }
+  50% {
+    transform: translate(-100%, -100%) translate3d(100%, 100%, 0);
+  }
+  75% {
+    transform: translate(-100%, -100%) translate3d(0, 100%, 0);
+  }
+  100% {
+    transform: translate(-100%, -100%) translate3d(0, 0, 0);
+  }
+}
+
+/* Четкое движение по углам широкого блока */
+@keyframes history-perimeter {
+  0% {
+    top: -60px;
+    left: -60px;
+  }
+  25% {
+    top: -60px;
+    left: calc(100% - 120px);
+  }
+  50% {
+    top: calc(100% - 120px);
+    left: calc(100% - 120px);
+  }
+  75% {
+    top: calc(100% - 120px);
+    left: -60px;
+  }
+  100% {
+    top: -60px;
+    left: -60px;
   }
 }
