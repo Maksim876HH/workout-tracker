@@ -1,19 +1,22 @@
-import { useState, useEffect, useRef} from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import WorkoutCard from './WorkoutCard';
 import './App.css';
 import WorkoutForm from './WorkoutForm';
 import RestTimer from './RestTimer';
 import { useLocalStorage } from './useLocalStorage';
-import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css'; 
 import { format } from 'date-fns';
 import { ChevronDownIcon, Calendar as CalendarIcon } from 'lucide-react';
 import { useWorkouts } from './useWorkouts';
 import { User, LogOut } from 'lucide-react';
 import { supabase } from './supabaseClient';
-import Auth from './Auth';
+const Auth = lazy(() => import('./Auth'))
 import logoImage from './img/gantelya.png';
-
+const DayPicker = lazy(() =>
+  import('react-day-picker').then((module) => ({
+    default: module.DayPicker,
+  }))
+)
 
 
 
@@ -418,18 +421,20 @@ const handleClearAll = async () => {
                     '--rdp-day-font-size': '0.8rem',      
                     fontSize: '0.8rem'
                   }}>
-                    <DayPicker
-                      mode="single"
-                      selected={customDate ? new Date(customDate) : undefined}
-                      onSelect={(day) => {
-                        if (day) {
-                          const formatted = format(day, "yyyy-MM-dd");
-                          setCustomDate(formatted);
-                          setDateFilter('custom');
-                          setIsCalendarOpen(false); 
-                        }
-                      }}
-                    />
+                    <Suspense fallback={<div>Загрузка календаря...</div>}>
+  <DayPicker
+    mode="single"
+    selected={customDate ? new Date(customDate) : undefined}
+    onSelect={(day) => {
+      if (day) {
+        const formatted = format(day, "yyyy-MM-dd");
+        setCustomDate(formatted);
+        setDateFilter('custom');
+        setIsCalendarOpen(false);
+      }
+    }}
+  />
+</Suspense>
                   </div>
                 )}
               </div>
@@ -469,7 +474,12 @@ const handleClearAll = async () => {
         </div>
       </section>
       
-      <Auth isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+      <Suspense fallback={null}>
+  <Auth
+    isOpen={isAuthModalOpen}
+    onClose={() => setIsAuthModalOpen(false)}
+  />
+</Suspense>
     </div>
   );
 }
