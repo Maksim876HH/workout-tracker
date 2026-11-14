@@ -16,25 +16,53 @@ import logoImage from './img/gantelya.png';
 
 
 
+
+
+
 function App() {
-  const [session, setSession] = useState(null);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [session, setSession] = useState(null)
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+const [authLoading, setAuthLoading] = useState(true)
+const authEventReceived = useRef(false)
 
-    return () => subscription.unsubscribe();
-  }, []);
+useEffect(() => {
+  let mounted = true
+
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (mounted && !authEventReceived.current) {
+      setSession(session)
+      setAuthLoading(false)
+    }
+  })
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange((_event, session) => {
+    authEventReceived.current = true
+    setSession(session)
+    setAuthLoading(false)
+  })
+
+  return () => {
+    mounted = false
+    subscription.unsubscribe()
+  }
+}, [])
 
   
   // --- 1. STATE (Состояние) ---
-  const { workouts, addWorkout, updateWorkout, deleteWorkout, clearAllWorkouts } = useWorkouts();
+const {
+  workouts,
+  loading: workoutsLoading,
+  addWorkout,
+  updateWorkout,
+  deleteWorkout,
+  clearAllWorkouts,
+} = useWorkouts(session?.user?.id ?? null)
+
+
 const [theme, setTheme] = useLocalStorage('theme', 'dark');
 
   // Поиск и фильтр по дате ('today', 'yesterday', или 'YYYY-MM-DD')
@@ -112,62 +140,83 @@ const [theme, setTheme] = useLocalStorage('theme', 'dark');
 
   // Добавление нового подхода
   const handleAddWorkout = (exName, w, r) => {
-  addWorkout({
+  return addWorkout({
     exercise: exName,
     weight: w,
     reps: r,
     date: new Date().toISOString(),
-  });
-};
+  })
+}
 
   // Дублирование (+1 Set)
-  const handleDuplicate = (workoutToDuplicate) => {
-  addWorkout({
+const handleDuplicate = async (workoutToDuplicate) => {
+  const result = await addWorkout({
     exercise: workoutToDuplicate.exercise,
     weight: workoutToDuplicate.weight,
     reps: workoutToDuplicate.reps,
     date: new Date().toISOString(),
-  });
-};
+  })
+
+  if (!result.success) {
+    alert(result.error?.message || 'Не удалось дублировать тренировку')
+  }
+}
 
 // Редактирование
-  const handleEdit = (workoutToEdit) => {
-    const newWeightInput = prompt('Enter new weight (kg):', workoutToEdit.weight);
-    if (newWeightInput === null) return;
+ const handleEdit = async (workoutToEdit) => {
+  const newWeightInput = prompt('Enter new weight (kg):', workoutToEdit.weight)
+  if (newWeightInput === null) return
 
-    const newRepsInput = prompt('Enter new reps:', workoutToEdit.reps);
-    if (newRepsInput === null) return;
+  const newRepsInput = prompt('Enter new reps:', workoutToEdit.reps)
+  if (newRepsInput === null) return
 
-    const newWeight = Number(newWeightInput);
-    const newReps = Number(newRepsInput);
+  const newWeight = Number(newWeightInput)
+  const newReps = Number(newRepsInput)
 
-    if (isNaN(newWeight) || isNaN(newReps) || newWeight <= 0 || newReps <= 0) {
-      alert('Invalid input! Weight and reps must be numbers greater than 0.');
-      return;
-    }
+  if (
+    isNaN(newWeight) ||
+    isNaN(newReps) ||
+    newWeight <= 0 ||
+    newReps <= 0
+  ) {
+    alert('Invalid input! Weight and reps must be numbers greater than 0.')
+    return
+  }
 
-    updateWorkout(workoutToEdit.id, {
-      weight: String(newWeight),
-      reps: String(newReps),
-    });
-  };
- 
+  const result = await updateWorkout(workoutToEdit.id, {
+    weight: String(newWeight),
+    reps: String(newReps),
+  })
+
+  if (!result.success) {
+    alert(result.error?.message || 'Не удалось обновить тренировку')
+  }
+}
 
   // Удаление подхода
-  const handleDelete = (id) => {
-  deleteWorkout(id);
-};
+  const handleDelete = async (id) => {
+  const result = await deleteWorkout(id)
+
+  if (!result.success) {
+    alert(result.error?.message || 'Не удалось удалить тренировку')
+  }
+}
 
   // Очистка всех подходов
-  const handleClearAll = () => {
-    if (workouts.length === 0) {
-      alert('Your workout list is already empty!');
-      return;
+const handleClearAll = async () => {
+  if (workouts.length === 0) {
+    alert('Your workout list is already empty!')
+    return
+  }
+
+  if (confirm('Are you sure you want to clear all workouts for today?')) {
+    const result = await clearAllWorkouts()
+
+    if (!result.success) {
+      alert(result.error?.message || 'Не удалось очистить список тренировок')
     }
-    if (confirm('Are you sure you want to clear all workouts for today?')) {
-      clearAllWorkouts();
-    }
-  };
+  }
+}
 
   // --- 4. ФИЛЬТРАЦИЯ ПО ДАТАМ И ПОИСКУ ---
   const isSameDay = (dateString, targetDate) => {
@@ -211,7 +260,12 @@ const [theme, setTheme] = useLocalStorage('theme', 'dark');
     0
   );
 
+  if (authLoading || workoutsLoading) {
+  return <div className="app-loading">Загрузка...</div>
+}
+
   return (
+    
   
     <div id="app">
       <header className="app-header">
