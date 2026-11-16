@@ -666,6 +666,187 @@ button:hover {
   animation: fadeInSlide 0.3s ease-out;
 }
 
+/* ===== Statistics Dashboard ===== */
+
+.main-navigation {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+.statistics-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 16px;
+  color: var(--text-main, #f8fafc);
+  animation: statisticsFadeIn 0.35s ease;
+}
+
+.statistics-section h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  margin-bottom: 24px;
+  margin-top: 24px;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.statistics-section .stats-card {
+  min-width: 0;
+  min-height: 76px;
+  margin-bottom: 0;
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--card-bg, #1f2937);
+  border: 1px solid var(--border-color, #374151);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.statistics-section .stats-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-color, #22c55e);
+}
+
+.statistics-section .stats-card span {
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.9rem;
+}
+
+.statistics-section .stats-card strong {
+  color: var(--accent-color, #22c55e);
+  font-size: 1.25rem;
+}
+
+.statistics-panel {
+  background: var(--card-bg, #1f2937);
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 22px;
+}
+
+.statistics-panel h3 {
+  margin: 0 0 22px;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.activity-chart {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  gap: 10px;
+  height: 190px;
+  padding-top: 10px;
+}
+
+.activity-column {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.activity-count {
+  color: var(--text-main, #f8fafc);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.activity-bar-wrapper {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 125px;
+  border-radius: 8px;
+  background: var(--input-bg, #111827);
+  overflow: hidden;
+}
+
+.activity-bar {
+  width: 70%;
+  min-height: 3px;
+  border-radius: 7px 7px 0 0;
+  background: var(--accent-color, #22c55e);
+  transition: height 0.4s ease;
+}
+
+.activity-label {
+  color: var(--text-secondary, #9ca3af);
+  font-size: 0.8rem;
+}
+
+.top-exercises {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-exercises .stats-card {
+  min-height: 56px;
+}
+
+.statistics-panel > p {
+  color: var(--text-secondary, #9ca3af);
+  text-align: center;
+  padding: 12px 0;
+}
+
+@keyframes statisticsFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .statistics-section {
+    padding: 0 10px;
+  }
+
+  .statistics-grid {
+    gap: 10px;
+  }
+
+  .statistics-section .stats-card {
+    padding: 12px;
+    gap: 6px;
+    font-size: 0.9rem;
+  }
+
+  .statistics-section .stats-card span {
+    font-size: 0.8rem;
+  }
+
+  .statistics-section .stats-card strong {
+    font-size: 1.1rem;
+  }
+
+  .statistics-panel {
+    padding: 15px;
+  }
+
+  .activity-chart {
+    gap: 6px;
+  }
+}
+
 @keyframes fadeInSlide {
   from {
     opacity: 0;

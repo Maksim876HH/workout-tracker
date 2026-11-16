@@ -8,8 +8,10 @@ import 'react-day-picker/dist/style.css';
 import { format } from 'date-fns';
 import { ChevronDownIcon, Calendar as CalendarIcon } from 'lucide-react';
 import { useWorkouts } from './useWorkouts';
+import { useRestTimer } from './useRestTimer';
 import { User, LogOut } from 'lucide-react';
 import { supabase } from './supabaseClient';
+import Statistics from './Statistics';
 const Auth = lazy(() => import('./Auth'))
 import logoImage from './img/gantelya.png';
 const DayPicker = lazy(() =>
@@ -68,6 +70,8 @@ const {
 
 const [theme, setTheme] = useLocalStorage('theme', 'dark');
 
+const [activeTab, setActiveTab] = useState('workouts');
+
   // Поиск и фильтр по дате ('today', 'yesterday', или 'YYYY-MM-DD')
   const [search, setSearch] = useState('');
   const [dateFilter, setDateFilter] = useState('today');
@@ -92,9 +96,18 @@ const [theme, setTheme] = useLocalStorage('theme', 'dark');
   }, [isCalendarOpen]);
 
   // Таймер
-  const [selectedPreset, setSelectedPreset] = useState(90);
-  const [timeLeft, setTimeLeft] = useState(90);
-  const [isRunning, setIsRunning] = useState(false);
+const {
+  selectedPreset,
+  timeLeft,
+  isFinished,
+  startTimer,
+  stopTimer,
+  resetTimer,
+  handlePresetClick,
+  setCustomTime,
+  addTime,
+  formatTime,
+} = useRestTimer();
 
   // --- 2. ЭФФЕКТЫ (LocalStorage и Theme) ---
   useEffect(() => {
@@ -105,41 +118,14 @@ const [theme, setTheme] = useLocalStorage('theme', 'dark');
     }
   }, [theme]);
 
-  // Логика работы таймера
-  useEffect(() => {
-    let timer;
-    if (isRunning && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            setIsRunning(false);
-            alert('Rest time is over! Time for the next set!');
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
+
+  
 
   // --- 3. ХЕНДЛЕРЫ И ФУНКЦИИ ---
   const toggleTheme = () => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  };
-
-  const handlePresetClick = (seconds) => {
-    setSelectedPreset(seconds);
-    setTimeLeft(seconds);
-    setIsRunning(false);
-  };
 
   // Добавление нового подхода
   const handleAddWorkout = (exName, w, r) => {
@@ -324,17 +310,39 @@ const handleClearAll = async () => {
   <span style={{ color: '#22c55e' }}>Log</span>
 </h1>
 </div>
-      </header>
+<nav className="main-navigation">
+  <button
+    type="button"
+    className={activeTab === 'workouts' ? 'nav-btn active' : 'nav-btn'}
+    onClick={() => setActiveTab('workouts')}
+  >
+    Workouts
+  </button>
 
-      <RestTimer 
-        timeLeft={timeLeft}
-        isRunning={isRunning}
-        selectedPreset={selectedPreset}
-        formatTime={formatTime}
-        handlePresetClick={handlePresetClick}
-        setIsRunning={setIsRunning}
-        setTimeLeft={setTimeLeft}
-      />
+  <button
+    type="button"
+    className={activeTab === 'statistics' ? 'nav-btn active' : 'nav-btn'}
+    onClick={() => setActiveTab('statistics')}
+  >
+    Statistics
+  </button>
+</nav>
+      </header>
+      {activeTab === 'workouts' && (
+  <>
+
+      <RestTimer
+  timeLeft={timeLeft}
+  selectedPreset={selectedPreset}
+  formatTime={formatTime}
+  handlePresetClick={handlePresetClick}
+  isFinished={isFinished}
+  startTimer={startTimer}
+  stopTimer={stopTimer}
+  resetTimer={resetTimer}
+  setCustomTime={setCustomTime}
+  addTime={addTime}
+/>
       
       <WorkoutForm onAddWorkout={handleAddWorkout} />
 
@@ -472,8 +480,14 @@ const handleClearAll = async () => {
             ))}
           </ul>
         </div>
-      </section>
-      
+            </section>
+        </>
+)}
+
+      {activeTab === 'statistics' && (
+        <Statistics workouts={workouts} />
+      )}
+
       <Suspense fallback={null}>
   <Auth
     isOpen={isAuthModalOpen}
