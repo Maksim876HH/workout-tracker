@@ -1,12 +1,20 @@
 
 import { useState } from 'react'
 
-function WorkoutForm({ onAddWorkout }) {
-  const [exercise, setExercise] = useState('')
-  const [weight, setWeight] = useState('')
-  const [reps, setReps] = useState('')
+function WorkoutForm({ onAddWorkout, selectedExercise }) {
+ const [exercise, setExercise] = useState(selectedExercise?.name || '')
+const [weight, setWeight] = useState(
+  selectedExercise?.weight === '' || selectedExercise?.weight == null
+    ? ''
+    : String(selectedExercise.weight)
+)
+const [reps, setReps] = useState(
+  selectedExercise ? String(selectedExercise.reps) : ''
+)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault()

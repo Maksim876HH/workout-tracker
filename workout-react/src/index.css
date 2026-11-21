@@ -804,6 +804,163 @@ button:hover {
   padding: 12px 0;
 }
 
+/* Training Planner */
+
+.planner-section {
+  width: 100%;
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 20px;
+  background: var(--card-bg, #1f2937);
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 12px;
+}
+
+.planner-section h2 {
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.planner-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.planner-day {
+  padding: 10px 4px;
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-color, #fff);
+  cursor: pointer;
+}
+
+.planner-day.active {
+  background: var(--accent-color, #22c55e);
+  color: #fff;
+  border-color: var(--accent-color, #22c55e);
+}
+
+.planner-panel {
+  padding: 18px;
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 10px;
+}
+
+.planner-panel h3 {
+  margin: 0 0 14px;
+}
+
+.planner-panel label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.planner-panel input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 8px;
+  background: var(--input-bg, #111827);
+  color: var(--text-color, #fff);
+}
+
+.planner-exercise-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.planner-add-btn,
+.planner-save-btn,
+.planner-delete-btn {
+  padding: 11px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.planner-add-btn,
+.planner-save-btn {
+  background: var(--accent-color, #22c55e);
+  color: #fff;
+}
+
+.planner-exercise-list {
+  margin-top: 20px;
+}
+
+.planner-exercise {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border-color, #374151);
+  border-radius: 8px;
+}
+
+.planner-exercise p {
+  margin: 6px 0 0;
+  color: var(--muted-text, #9ca3af);
+  font-size: 0.9rem;
+}
+
+.planner-exercise button {
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.planner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.planner-delete-btn {
+  background: #dc2626;
+  color: #fff;
+}
+
+.planner-message {
+  margin-top: 14px;
+  color: var(--accent-color, #22c55e);
+}
+
+@media (max-width: 480px) {
+  .planner-section {
+    padding: 12px;
+  }
+
+  .planner-days {
+    gap: 4px;
+  }
+
+  .planner-day {
+    padding: 9px 2px;
+    font-size: 0.8rem;
+  }
+
+  .planner-panel {
+    padding: 12px;
+  }
+
+  .planner-exercise-form {
+    grid-template-columns: 1fr;
+  }
+}
+
 @keyframes statisticsFadeIn {
   from {
     opacity: 0;

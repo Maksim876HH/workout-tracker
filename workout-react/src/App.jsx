@@ -12,6 +12,8 @@ import { useRestTimer } from './useRestTimer';
 import { User, LogOut } from 'lucide-react';
 import { supabase } from './supabaseClient';
 import Statistics from './Statistics';
+import TrainingPlanner from './TrainingPlanner';
+import { useTrainingPlans } from './useTrainingPlans';
 const Auth = lazy(() => import('./Auth'))
 import logoImage from './img/gantelya.png';
 const DayPicker = lazy(() =>
@@ -27,10 +29,9 @@ const DayPicker = lazy(() =>
 function App() {
   const [session, setSession] = useState(null)
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-
-
-const [authLoading, setAuthLoading] = useState(true)
-const authEventReceived = useRef(false)
+  const [authLoading, setAuthLoading] = useState(true)
+  const authEventReceived = useRef(false)
+  const [selectedExercise, setSelectedExercise] = useState(null)
 
 useEffect(() => {
   let mounted = true
@@ -66,6 +67,13 @@ const {
   deleteWorkout,
   clearAllWorkouts,
 } = useWorkouts(session?.user?.id ?? null)
+const {
+  plans,
+  loading: plansLoading,
+  savePlan,
+  deletePlan,
+} = useTrainingPlans(session?.user?.id ?? null)
+
 
 
 const [theme, setTheme] = useLocalStorage('theme', 'dark');
@@ -326,6 +334,15 @@ const handleClearAll = async () => {
   >
     Statistics
   </button>
+  {session && (
+  <button
+    type="button"
+    className={activeTab === 'planner' ? 'nav-btn active' : 'nav-btn'}
+    onClick={() => setActiveTab('planner')}
+  >
+    Planner
+  </button>
+)}
 </nav>
       </header>
       {activeTab === 'workouts' && (
@@ -344,7 +361,11 @@ const handleClearAll = async () => {
   addTime={addTime}
 />
       
-      <WorkoutForm onAddWorkout={handleAddWorkout} />
+      <WorkoutForm
+  key={selectedExercise?.id || 'manual'}
+  onAddWorkout={handleAddWorkout}
+  selectedExercise={selectedExercise}
+/>
 
      <section className="history-section">
         {/* Зеленый анимированный шар */}
@@ -484,18 +505,32 @@ const handleClearAll = async () => {
         </>
 )}
 
-      {activeTab === 'statistics' && (
-        <Statistics workouts={workouts} />
-      )}
+      
+{activeTab === 'statistics' && (
+  <Statistics workouts={workouts} />
+)}
 
-      <Suspense fallback={null}>
+{activeTab === 'planner' && session && (
+  <TrainingPlanner
+    plans={plans}
+    loading={plansLoading}
+    savePlan={savePlan}
+    deletePlan={deletePlan}
+    onSelectExercise={(exercise) => {
+      setSelectedExercise(exercise)
+      setActiveTab('workouts')
+    }}
+  />
+)}
+
+<Suspense fallback={null}>
   <Auth
     isOpen={isAuthModalOpen}
     onClose={() => setIsAuthModalOpen(false)}
   />
 </Suspense>
-    </div>
-  );
+</div>
+);
 }
 
 export default App;
